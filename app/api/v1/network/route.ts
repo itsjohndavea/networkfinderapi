@@ -12,7 +12,7 @@ interface CountryData {
     NETWORK: NetworkData;
 }
 
-export async function GET(req: NextRequest) {
+export async function GET() {
     const dataUrl = process.env.DATA_JSON_URL;
 
     if (!dataUrl) {
