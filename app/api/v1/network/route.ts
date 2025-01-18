@@ -41,7 +41,7 @@ export async function GET() {
         }
     } catch (e) {
         return NextResponse.json(
-            { message: "Error processing data", status: 500 },
+            { message: `Error processing data ${e}`, status: 500 },
             { status: 500 }
         );
     }
