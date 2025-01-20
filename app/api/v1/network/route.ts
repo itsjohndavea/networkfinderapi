@@ -1,3 +1,5 @@
+import { NextResponse } from "next/server";
+
 interface NetworkData {
     [operator: string]: string[];
 }
@@ -15,20 +17,9 @@ export async function GET() {
     const dataUrl = process.env.DATA_JSON_URL;
 
     if (!dataUrl) {
-        return new Response(
-            JSON.stringify({
-                message: "Environment variable DATA_JSON_URL not set",
-                error: true,
-            }),
-            {
-                status: 500,
-                headers: {
-                    "Content-Type": "application/json",
-                    "Access-Control-Allow-Origin": "*", // Allow all origins
-                    "Access-Control-Allow-Methods": "GET, OPTIONS", // Specify allowed methods
-                    "Access-Control-Allow-Headers": "Content-Type", // Specify allowed headers
-                },
-            }
+        return NextResponse.json(
+            { message: "Environment variable DATA_JSON_URL not set", error: true },
+            { status: 500 }
         );
     }
 
@@ -47,38 +38,16 @@ export async function GET() {
             throw new Error("Invalid data format. Expected an array.");
         }
 
-        // Respond with the data and CORS headers
-        return new Response(
-            JSON.stringify({ message: "Data fetched successfully", data }),
-            {
-                status: 200,
-                headers: {
-                    "Content-Type": "application/json",
-                    "Access-Control-Allow-Origin": "*", // Allow all origins
-                    "Access-Control-Allow-Methods": "GET, OPTIONS", // Specify allowed methods
-                    "Access-Control-Allow-Headers": "Content-Type", // Specify allowed headers
-                },
-            }
+        // Respond with the data
+        return NextResponse.json(
+            { message: "Data fetched successfully", data },
+            { status: 200 }
         );
     } catch (error: unknown) {
-        const errorMessage =
-            error instanceof Error ? error.message : "Unknown error occurred";
-
-        // Respond with error and CORS headers
-        return new Response(
-            JSON.stringify({
-                message: `Error processing data: ${errorMessage}`,
-                error: true,
-            }),
-            {
-                status: 500,
-                headers: {
-                    "Content-Type": "application/json",
-                    "Access-Control-Allow-Origin": "*", // Allow all origins
-                    "Access-Control-Allow-Methods": "GET, OPTIONS", // Specify allowed methods
-                    "Access-Control-Allow-Headers": "Content-Type", // Specify allowed headers
-                },
-            }
+        const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+        return NextResponse.json(
+            { message: `Error processing data: ${errorMessage}`, error: true },
+            { status: 500 }
         );
     }
 }
