@@ -1,15 +1,16 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 
 interface NetworkData {
     [operator: string]: string[];
 }
 
-interface CountryData {
-    name: string;
-    code: string;
+export interface CountryData {
     continent: string;
     region: string;
-    NETWORK: NetworkData;
+    countryName: string;
+    countryCode: string;
+    code: string;
+    networks: NetworkData;
 }
 
 export async function GET() {
@@ -23,25 +24,29 @@ export async function GET() {
     }
 
     try {
-        // Fetch data from the URL
+        // Fetch the JSON data from the provided URL
         const response = await fetch(dataUrl);
 
         if (!response.ok) {
-            throw new Error("Error fetching data");
+            throw new Error(`Failed to fetch data: ${response.statusText}`);
         }
 
         // Parse the JSON data
-        const data:  CountryData  = await response.json();
+        const data: CountryData[] = await response.json();
 
-        if (data != null) {
-            return NextResponse.json(
-                { message: "Data fetched successfully", status: 200, data },
-                { status: 200 }
-            );
+        if (!Array.isArray(data)) {
+            throw new Error("Invalid data format. Expected an array.");
         }
-    } catch (e) {
+
+        // Respond with the data
         return NextResponse.json(
-            { message: `Error processing data ${e}`, status: 500 },
+            { message: "Data fetched successfully", data },
+            { status: 200 }
+        );
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+        return NextResponse.json(
+            { message: `Error processing data: ${errorMessage}`, error: true },
             { status: 500 }
         );
     }
