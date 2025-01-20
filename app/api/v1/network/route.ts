@@ -1,5 +1,3 @@
-import { NextResponse } from "next/server";
-
 interface NetworkData {
     [operator: string]: string[];
 }
