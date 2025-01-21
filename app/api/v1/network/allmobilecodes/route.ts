@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { Data } from "../../../datamodel";
 
-// This will handle requests to the /api/v1/network/allcontinents endpoint
+// This will handle requests to the /api/v1/network/allmobilecodesendpoint
 export async function GET() {
     const dataUrl = process.env.DATA_JSON_URL;
 
@@ -28,11 +28,11 @@ export async function GET() {
         }
 
         // Extract the unique list of country names
-        const continents = [...new Set(data.map(item => item.continent))];
+        const mobileCode = [...new Set(data.map(item => item.code))];
 
         // Respond with the list of countries
         return NextResponse.json(
-            { message: "Continents fetched successfully", status: 200, continents: continents },
+            { message: "Mobile Code fetched successfully", status: 200, mobileCode: mobileCode },
             { status: 200 }
         );
     } catch (error: unknown) {
