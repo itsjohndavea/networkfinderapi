@@ -1,9 +1,8 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { Data } from "../../../datamodel";
 
-
-// This will handle requests to the /api/v1/network/{id}) endpoint
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+// This will handle requests to the /api/v1/network/[id] endpoint
+export async function GET(req: Request, { params }: { params: { id: string } }) {
     const dataUrl = process.env.DATA_JSON_URL;
 
     if (!dataUrl) {
@@ -27,9 +26,11 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
         if (!Array.isArray(data)) {
             throw new Error("Invalid data format. Expected an array.");
         }
+
+        // Await params to ensure asynchronous behavior
         const { id } = await params;
 
-        // Find the data with the matching id
+        // Find the network with the matching id
         const networkData = data.find((item) => item.id === Number(id));
 
         if (!networkData) {
