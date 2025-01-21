@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextResponse,NextRequest } from "next/server";
 import { Data } from "../../../datamodel";
 
 // This will handle requests to the /api/v1/network/[id] endpoint
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest,{ params } : { params: Promise<{ id: string }> } )  {
     const dataUrl = process.env.DATA_JSON_URL;
 
     if (!dataUrl) {
