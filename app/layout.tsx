@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Mobile Network Finder Api",
+  title: "Mobile Network Finder API",
   description: "",
 };
 
