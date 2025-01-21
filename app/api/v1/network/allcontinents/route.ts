@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
-import { Data } from "../../datamodel";
+import { Data } from "../../../datamodel";
 
-// This will handle requests to the /api/v1/network/searchnetwork?countryCode={}&mobileNumber={}) endpoint
+// This will handle requests to the /api/v1/continents endpoint
 export async function GET() {
     const dataUrl = process.env.DATA_JSON_URL;
 
     if (!dataUrl) {
         return NextResponse.json(
-            { message: "Environment variable DATA_JSON_URL not set", status: 500,  error: true },
+            { message: "Environment variable DATA_JSON_URL not set", status: 500, error: true },
             { status: 500 }
         );
     }
@@ -27,9 +27,12 @@ export async function GET() {
             throw new Error("Invalid data format. Expected an array.");
         }
 
-        // Respond with the fetched data
+        // Extract the unique list of country names
+        const continents = [...new Set(data.map(item => item.continent))];
+
+        // Respond with the list of countries
         return NextResponse.json(
-            { message: "Data fetched successfully",status: 200,  data },
+            { message: "Continents fetched successfully", status: 200, continents: continents },
             { status: 200 }
         );
     } catch (error: unknown) {
