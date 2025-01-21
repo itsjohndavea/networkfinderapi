@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { Data } from "../../../datamodel";
 
-// This will handle requests to the /api/v1/countries endpoint
+// This will handle requests to the /api/v1/network/allcountries endpoint
 export async function GET() {
     const dataUrl = process.env.DATA_JSON_URL;
 
