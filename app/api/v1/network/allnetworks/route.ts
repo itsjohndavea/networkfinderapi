@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
-import { Data } from "../../datamodel";
+import { Data } from "../../../datamodel";
 
-// This will handle requests to the /api/v1/network/searchnetwork?countryCode={}&mobileNumber={}) endpoint
+// This will handle requests to the /api/v1/network/allnetworks endpoint
 export async function GET() {
     const dataUrl = process.env.DATA_JSON_URL;
 
     if (!dataUrl) {
         return NextResponse.json(
-            { message: "Environment variable DATA_JSON_URL not set", status: 500,  error: true },
+            { message: "Environment variable DATA_JSON_URL not set", status: 500, error: true },
             { status: 500 }
         );
     }
@@ -27,9 +27,15 @@ export async function GET() {
             throw new Error("Invalid data format. Expected an array.");
         }
 
-        // Respond with the fetched data
+        // Extract network names from each networkData object
+        const networks = data.flatMap(item => Object.keys(item.networks));  // Extract network names from the 'networks' object
+
+        // Use Set to ensure uniqueness
+        const uniqueNetworks = [...new Set(networks)];
+
+        // Respond with the list of unique network names
         return NextResponse.json(
-            { message: "Data fetched successfully",status: 200,  data },
+            { message: "Networks fetched successfully", status: 200, networks: uniqueNetworks },
             { status: 200 }
         );
     } catch (error: unknown) {

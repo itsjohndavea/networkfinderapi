@@ -1,13 +1,14 @@
-import { NextResponse } from "next/server";
-import { Data } from "../../datamodel";
+import { NextResponse, NextRequest } from "next/server";
+import { Data } from "../../../datamodel";
 
-// This will handle requests to the /api/v1/network/searchnetwork?countryCode={}&mobileNumber={}) endpoint
-export async function GET() {
+
+// This will handle requests to the /api/v1/network/{id}) endpoint
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
     const dataUrl = process.env.DATA_JSON_URL;
 
     if (!dataUrl) {
         return NextResponse.json(
-            { message: "Environment variable DATA_JSON_URL not set", status: 500,  error: true },
+            { message: "Environment variable DATA_JSON_URL not set", error: true },
             { status: 500 }
         );
     }
@@ -26,10 +27,21 @@ export async function GET() {
         if (!Array.isArray(data)) {
             throw new Error("Invalid data format. Expected an array.");
         }
+        const { id } = await params;
 
-        // Respond with the fetched data
+        // Find the data with the matching id
+        const networkData = data.find((item) => item.id === Number(id));
+
+        if (!networkData) {
+            return NextResponse.json(
+                { message: `Data with id ${id} not found`, status: 404, error: true },
+                { status: 404 }
+            );
+        }
+
+        // Respond with the specific network data
         return NextResponse.json(
-            { message: "Data fetched successfully",status: 200,  data },
+            { message: "Data fetched successfully", status: 200, data: networkData },
             { status: 200 }
         );
     } catch (error: unknown) {
